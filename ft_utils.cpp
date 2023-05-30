@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstring>
+#include <vector>
 
 std::vector<std::string> split(const std::string& str, char delimiter) {
     std::vector<std::string> tokens;
@@ -46,13 +47,8 @@ const char *find_methode(std :: string request)
 
 const char *find_uri(std :: string request)
 {
-    int i = request.find(' ');
-    int j = request.find(' ', i + 1);
-    std::string uri = request.substr(i + 1, j - i - 1);
-    if (i != std::string::npos) {
-        uri = request.substr(0, i+1);
-    }
-    return (uri.c_str());
+    std::vector<std::string> lists = split(request, ' ');
+    return (lists[1].c_str());
 }
 
 int main()
