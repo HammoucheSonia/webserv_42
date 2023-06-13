@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <vector>
+#include <sstream> 
 
 std::vector<std::string> split(const std::string& str, char delimiter) {
     std::vector<std::string> tokens;
@@ -51,11 +52,10 @@ const char *find_uri(std :: string request)
     return (lists[1].c_str());
 }
 
-int main()
+int main(int argc, char **argv)
 {
-    std :: cout << find_uri("GET /search?platform=Windows&category=office") << std :: endl;
-    if (isValidHTTPMethod(find_methode("GET /search?platform=Windows&category=office")))
-        std :: cout << "coucou\n";
-    else 
-        std :: cout << "salut\n";
+    //std :: string test;
+    std ::string test(argv[1], ftstrlem);
+    std :: cout << test << std :: endl;
+    return (0);
 }

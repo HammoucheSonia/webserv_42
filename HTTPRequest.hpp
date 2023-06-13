@@ -7,14 +7,17 @@ struct HTTPHeader;
     std :: string value;
 };
 
-class HTTPRequest
+struct HTTPRequest
 {
-    private:
-        std :: string method;
-        std :: string uri;
-        std :: string protocol;
-        std :: string body;
-        HTTPHeader *headers;
-    public:
-        
+    std :: string method;
+    std :: string uri;
+    std :: string protocol;
+    std :: string body;
+    int H_lignes; 
+    HTTPHeader headers[H_lignes];       
+};
+
+class parse
+{
+    
 }
