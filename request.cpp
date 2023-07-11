@@ -16,12 +16,12 @@ Request::Request() {
 Request::Request(const char* request_array) {
     _chunked = false;
     _chunked_error = false;
-    _body = parse_body(request_array);
+    _body = parseBody(request_array);
     std::string request_string = std::string(request_array);
     std::string start_line = std::string(request_string, 0, request_string.find('\n'));
-    parse_start_line(request_string);
+    parseStartLine(request_string);
     _translated_path = std::string();
-    _headers = parse_headers(request_string);
+    _headers = parseHeaders(request_string);
 
     _host_port = _headers["Host"];
     size_t pos;
@@ -87,24 +87,24 @@ Request& Request::operator=(Request const& rhs) {
 
 std::ostream& operator<<(std::ostream& o, Request const& i) {
     o << "REQUEST-" << std::endl;
-    o << "Method: " << i.get_method() << std::endl
-      << "URI: " << i.get_URI() << std::endl
-      << "Path: " << i.get_path() << std::endl
-      << "Query string: " << i.get_query_string() << std::endl
-      << "Protocol: " << i.get_protocol() << std::endl
-      << "Host: " << i.get_host() << std::endl
-      << "Port: " << i.get_port() << std::endl
+    o << "Method: " << i.getMethod() << std::endl
+      << "URI: " << i.getURI() << std::endl
+      << "Path: " << i.getPath() << std::endl
+      << "Query string: " << i.getQueryString() << std::endl
+      << "Protocol: " << i.getProtocol() << std::endl
+      << "Host: " << i.getHost() << std::endl
+      << "Port: " << i.getPort() << std::endl
       << "Headers:" << std::endl;
-    displayMap(i.get_headers());
+    displayMap(i.getHeaders());
     o << std::endl
       << "Body:" << std::endl
-      << i.get_body() << std::endl;
+      << i.getBody() << std::endl;
     o << "end" << std::endl;
 
     return o;
 }
 
-int get_header_value(std::map<std::string, std::string>& headers, std::string request, std::string header) {
+int getHeaderValue(std::map<std::string, std::string>& headers, std::string request, std::string header) {
     size_t pos = 0;
     int len = 0;
     if ((pos = request.find(header + ": ")) != std::string::npos) {
@@ -117,7 +117,7 @@ int get_header_value(std::map<std::string, std::string>& headers, std::string re
     return 0;
 }
 
-void init_headers(std::map<std::string, std::string>& headers) {
+void initHeaders(std::map<std::string, std::string>& headers) {
     headers["Accept-Charset"] = std::string();
     headers["Accept-Language"] = std::string();
     headers["Authorization"] = std::string();
@@ -130,25 +130,25 @@ void init_headers(std::map<std::string, std::string>& headers) {
     headers["User-Agent"] = std::string();
 }
 
-std::map<std::string, std::string> Request::parse_headers(const std::string request_str) {
+std::map<std::string, std::string> Request::parseHeaders(const std::string request_str) {
     std::map<std::string, std::string> headers;
 
-    init_headers(headers);
-    get_header_value(headers, request_str, "Accept-Charset");
-    get_header_value(headers, request_str, "Accept-Language");
-    get_header_value(headers, request_str, "Authorization");
-    get_header_value(headers, request_str, "Content-Length");
-    get_header_value(headers, request_str, "Content-Type");
-    get_header_value(headers, request_str, "Date");
-    get_header_value(headers, request_str, "Host");
-    get_header_value(headers, request_str, "Referer");
-    get_header_value(headers, request_str, "Transfer-Encoding");
-    get_header_value(headers, request_str, "User-Agent");
+    initHeaders(headers);
+    getHeaderValue(headers, request_str, "Accept-Charset");
+    getHeaderValue(headers, request_str, "Accept-Language");
+    getHeaderValue(headers, request_str, "Authorization");
+    getHeaderValue(headers, request_str, "Content-Length");
+    getHeaderValue(headers, request_str, "Content-Type");
+    getHeaderValue(headers, request_str, "Date");
+    getHeaderValue(headers, request_str, "Host");
+    getHeaderValue(headers, request_str, "Referer");
+    getHeaderValue(headers, request_str, "Transfer-Encoding");
+    getHeaderValue(headers, request_str, "User-Agent");
 
     return headers;
 }
 
-string Request::parse_body(const char* request) {
+string Request::parseBody(const char* request) {
     string requestStr = string(request);
     size_t pos;
     char separator[5] = { 13, 10, 13, 10, 0 };
@@ -163,10 +163,10 @@ string Request::parse_body(const char* request) {
 
    
 
-int Request::parse_start_line(string start_line)
+int Request::parseStartLine(string startLine)
 {
-	string::iterator it_begin = start_line.begin();
-	string::iterator it_end = it_begin + start_line.find(" ");
+	string::iterator it_begin = startLine.begin();
+	string::iterator it_end = it_begin + startLine.find(" ");
 	if (*it_begin && *it_end)
 		_method = string(it_begin, it_end++);
 	it_begin = it_end;
@@ -180,7 +180,7 @@ int Request::parse_start_line(string start_line)
 	{
 		_path = string(_URI, 1, pos - 1);
 		pos += 1;
-		while (start_line[pos + len] && start_line[pos + len] != ' ')
+		while (startLine[pos + len] && startLine[pos + len] != ' ')
 			len++;
 		_query_string = string(_URI, pos, len);
 	}
@@ -198,17 +198,17 @@ int Request::parse_start_line(string start_line)
 }
 
 
-bool Request::is_bad_request() const
+bool Request::isBadRequest() const
 {
 	if (_chunked_error == true)
 		return true;
-	if (get_headers()["Host"] == string())
+	if (getHeaders()["Host"] == string())
 		return true;
 	else
 		return false;
 }
 
-void Request::append_root_to_path(string root)
+void Request::appendRootToPath(string root)
 {
 
 	if (root == string())
@@ -226,84 +226,83 @@ void Request::append_root_to_path(string root)
 	_translated_path = root + '/' + _path;
 }
 
-void Request::set_translated_path(string new_path)
+void Request::setTranslatedPath(string newPath)
 {
-	_translated_path = new_path;
+	_translated_path = newPath;
 }
 
-void Request::set_unchunked_body(string new_body)
+void Request::setUnchunkedBody(string newBody)
 {
-	_body = new_body;
+	_body = newBody;
 }
 
-void Request::set_chunked_error(bool error)
+void Request::setChunkedError(bool error)
 {
 	_chunked_error = error;
 }
 
 
-bool Request::is_chunked() const
+bool Request::isChunked() const
 {
 	return _chunked;
 }
 
-bool Request::is_chunked_false() const
+bool Request::isChunkedFalse() const
 {
 	return _chunked_error;
 }
 
-string Request::get_method() const
+string Request::getMethod() const
 {
 	return (_method);
 }
 
-string Request::get_URI() const
+string Request::getURI() const
 {
 	return (_URI);
 }
 
-string Request::get_path() const
+string Request::getPath() const
 {
 	return (_path);
 }
 
-string Request::get_translated_path() const
+string Request::getTranslatedPath() const
 {
 	return (_translated_path);
 }
 
-string Request::get_query_string() const
+string Request::getQueryString() const
 {
 	return (_query_string);
 }
 
-string Request::get_protocol() const
+string Request::getProtocol() const
 {
 	return (_protocol);
 }
 
-map Request::get_headers() const
+map Request::getHeaders() const
 {
 	return (_headers);
 }
 
-string Request::get_body() const
+string Request::getBody() const
 {
 	return (_body);
 }
 
-string Request::get_host_port() const
+string Request::getHostPort() const
 {
 	return (_host_port);
 }
 
-string Request::get_host() const
+string Request::getHost() const
 {
 	return (_host);
 }
 
-string Request::get_port() const
+string Request::getPort() const
 {
 	return (_port);
 }
-

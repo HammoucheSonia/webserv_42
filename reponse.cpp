@@ -152,7 +152,7 @@ void add_body_from_path(string &response, string path, off_t file_size)
 void CGI_response(Request &request, string &response, Location &location)
 {
 	std::cout << "CGI response\n";
-	string request_body = request.get_body();
+	string request_body = request.getBody();
 	std::vector<string> CGI_vector = convert_CGI_string_to_vector(request_body);
 	char **CGI_env = convert_CGI_vector_to_CGI_env(CGI_vector);
 
@@ -168,7 +168,7 @@ void CGI_response(Request &request, string &response, Location &location)
 		char **input = (char **)malloc(sizeof(char *) * 3);
 
 		input[0] = strdup(location.get_cgi_path().c_str());
-		input[1] = strdup(request.get_translated_path().c_str());
+		input[1] = strdup(request.getTranslatedPath().c_str());
 		input[2] = NULL;
 		execve(location.get_cgi_path().c_str(), input, CGI_env);
 		free(input[0]);
@@ -203,7 +203,7 @@ void CGI_response(Request &request, string &response, Location &location)
 
 bool request_is_cgi(Request &request, Location &location)
 {
-	string path = request.get_translated_path();
+	string path = request.getTranslatedPath();
 	if (location.is_empty())
 		return false;
 	string cgi_ext = location.get_cgi_extension();
@@ -233,14 +233,14 @@ string path_where_to_upload_file(Request &request, Location &location)
 {
 	if (location.is_empty())
 		return string();
-	string new_file_path = request.get_translated_path();
+	string new_file_path = request.getTranslatedPath() ;
 	return new_file_path;
 }
 
 bool request_is_to_upload_a_file_and_valid(Request &request, Location &location)
 {
 	string new_file_path = path_where_to_upload_file(request, location);
-	if (location.is_empty() || location.get_upload_path() == string() || path_is_a_directory(location.get_upload_path(), false) || request.get_method() != "POST" || new_file_path == string())
+	if (location.is_empty() || location.get_upload_path() == string() || path_is_a_directory(location.get_upload_path(), false) || request.getMethod() != "POST" || new_file_path == string())
 		return false;
 	else
 		return true;
@@ -249,7 +249,7 @@ bool request_is_to_upload_a_file_and_valid(Request &request, Location &location)
 void chunked_response(Request &request, string &response)
 {
 		add_status_line(response, CREATED); 
-		string body = request.get_body();
+		string body = request.getBody();
 		char *size_itoa;
 		size_itoa = (char *)NumberToString(body.size()).c_str();
 		add_header(response, "Date: ", get_current_date());
@@ -257,6 +257,3 @@ void chunked_response(Request &request, string &response)
 		response += '\n';
 		response += body;
 }
-
-
-
